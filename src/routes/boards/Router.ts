@@ -12,16 +12,16 @@ export class BoardsRouter {
 
   public init (): void {
     this.router.post(
-      '/boards',
+      '/',
       this.controller.create
     )
 
-    this.router.get('/boards', this.controller.read)
+    this.router.get('/', this.controller.read)
 
-    this.router.get('/boards/team/:teamId', this.controller.getFromTeamId)
+    this.router.get('/team/:teamId', this.controller.getFromTeamId)
 
     this.router.patch(
-      '/boards/:id',
+      '/:id',
       this.controller.update
     )
 

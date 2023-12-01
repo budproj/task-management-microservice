@@ -20,8 +20,15 @@ type TValidatePathId = (
   next: NextFunction
 ) => Response | void
 
+type TValidateUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => Response | void
+
 export interface IMiddlewares {
   errorHandler: TErrorHandler
   validateBody: TValidateBody
   validatePathId: TValidatePathId
+  validateUser: TValidateUser
 }

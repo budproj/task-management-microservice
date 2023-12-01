@@ -11,11 +11,11 @@ export class BoardsRepository extends AbstractRepository<IBoard> implements IBoa
     return await this.model.paginate({}, { page, limit, sort: { boardId: 1, status: 1, priority: -1 } })
   }
 
-  public async getFromTeamId (teamId: string): Promise<IBoard> {
+  public async getFromTeamId (teamId: string, body?: Partial<IBoard>): Promise<IBoard> {
     const board = await this.model.findOne({ teamsIds: { $in: [teamId] } }).exec()
 
     if (!board) {
-      return await this.model.create({ title: '', teamsIds: [teamId], type: 'TEAM_TASKS' })
+      return await this.model.create(body)
     }
 
     return board

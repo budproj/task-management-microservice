@@ -23,38 +23,38 @@ export class TasksRouter {
 
   public init (): void {
     this.router.post(
-      '/tasks',
-      this.middlewares.validateBody(this.validators.newTaskValidator),
+      '/',
+      this.middlewares.validateUser,
       this.controller.create
     )
 
-    this.router.get('/tasks', this.controller.read)
+    this.router.get('/', this.controller.read)
 
     this.router.get('/board/:boardId', this.controller.readFromBoard)
 
     this.router.patch(
-      '/tasks/:id',
+      '/:id',
       this.middlewares.validatePathId,
       this.middlewares.validateBody(this.validators.updateTaskValidator),
       this.controller.update
     )
 
     this.router.patch(
-      '/tasks/:id/members',
+      '/:id/members',
       this.middlewares.validatePathId,
       this.middlewares.validateBody(this.validators.updateTaskMembersOrTagsValidator),
       this.controller.updateMembers
     )
 
     this.router.patch(
-      '/tasks/:id/tags',
+      '/:id/tags',
       this.middlewares.validatePathId,
       this.middlewares.validateBody(this.validators.updateTaskMembersOrTagsValidator),
       this.controller.updateTags
     )
 
     this.router.delete(
-      '/tasks/:id',
+      '/:id',
       this.middlewares.validatePathId,
       this.controller.delete
     )

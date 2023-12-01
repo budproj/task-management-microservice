@@ -6,7 +6,7 @@ export class BoardsService extends AbstractService<IBoard> implements IBoardsSer
     super(repository)
   }
 
-  public async getFromTeamId (teamId: string): Promise<IBoard> {
-    return await this.repository.getFromTeamId(teamId)
+  public async getFromTeamId (teamId: string, body?: Partial<IBoard>): Promise<IBoard> {
+    return await this.repository.getFromTeamId(teamId, body)
   }
 }

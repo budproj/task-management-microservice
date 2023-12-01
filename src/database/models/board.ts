@@ -8,12 +8,11 @@ const boardSchema = new Schema<BoardDocument>({
   title: { type: String, required: true },
   teamsIds: [String],
   type: { type: String, required: true },
-  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
-  createdAt: { type: Date, required: true },
-  updatedAt: { type: Date, required: true }
+  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
 }, {
   collection: 'boards',
-  versionKey: false
+  versionKey: false,
+  timestamps: true
 })
 
 boardSchema.plugin(paginate)

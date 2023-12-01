@@ -1,31 +1,28 @@
 import { Request, Response, NextFunction } from 'express'
-// import { RabbitMqService } from '../routes/messaging/rabbitmq'
 
-export const validateUser = (req: Request, res: Response, next: NextFunction): Response | void => {
-  // const rabbitmq = new RabbitMqService()
+import AmqpConnection from '../routes/messaging/amqp-connection'
 
+export const validateUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   const authHeader = req.header('authorization')
   if (!authHeader) {
     return res.status(401).json({ msg: 'Header without auth' })
   }
 
-  // const [, token] = authHeader.split(' ')
-  // const decodedToken = await rabbitmq.sendMessage<JwtPayload>({
-  //   exchange: 'bud',
-  //   routingKey: 'business.core-ports.verify-token',
-  //   payload: token
-  // })
+  const amqp = new AmqpConnection()
 
-  // const user = await rabbitmq.sendMessage<User>({
-  //   exchange: 'bud',
-  //   routingKey: 'business.core-ports.get-user-with-teams-by-sub',
-  //   payload: decodedToken.sub
-  // })
+  const [, token] = authHeader.split(' ')
 
-  // req.user = {
-  //   ...user,
-  //   permissions: decodedToken.permissions
-  // }
+  const decodedToken = await amqp.sendMessage('business.core-ports.verify-token', token) as any
+
+  const user = await amqp.sendMessage('business.core-ports.get-user-with-teams-by-sub', decodedToken.sub) as any
+
+  const userCompanies = await amqp.sendMessage('business.core-ports.get-user-companies', user)
+
+  req.user = {
+    ...user,
+    companies: userCompanies,
+    permissions: decodedToken.permissions
+  }
 
   return next()
 }

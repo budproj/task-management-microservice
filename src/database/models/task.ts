@@ -9,18 +9,17 @@ const taskSchema = new Schema<TaskDocument>({
   status: { type: String, required: true }, // PENDING, TO_DO, DOING, DONE
   title: { type: String, required: true },
   description: { type: String, required: true },
-  dueDate: { type: Date, required: true },
+  dueDate: { type: Date },
   priority: { type: Number, required: true }, // min: 1 max: 4
   owner: { type: String, required: true },
   attachments: [String],
   supportTeamMembers: [String],
   tags: [String],
-  nextTaskId: { type: Schema.Types.ObjectId, ref: 'Task' },
-  createdAt: { type: Date, required: true },
-  updatedAt: { type: Date, required: true }
+  nextTaskId: { type: Schema.Types.ObjectId, ref: 'Task' }
 }, {
   collection: 'tasks',
-  versionKey: false
+  versionKey: false,
+  timestamps: true
 })
 
 taskSchema.plugin(paginate)
