@@ -13,4 +13,5 @@ export interface IService<T> {
   read: (page?: string, limit?: string) => Promise<IServiceReadResponse<T>>
   update: (id: string, data: Partial<T>) => Promise<T | null>
   delete: (id: string) => Promise<T | null>
+  get: (id: string) => Promise<T | null>
 }

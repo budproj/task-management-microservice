@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 
 export interface ITask {
+  id: any
   boardId: Types.ObjectId
   status: TASK_STATUS
   title: string
@@ -16,9 +17,9 @@ export interface ITask {
   updatedAt: Date
 }
 
-enum TASK_STATUS {
-  PENDING = 'PENDING',
-  TO_DO = 'TO_DO',
-  DOING = 'DOING',
-  DONE = 'DONE',
+export enum TASK_STATUS {
+  pending = 'pending',
+  toDo = 'toDo',
+  doing = 'doing',
+  done = 'done',
 }

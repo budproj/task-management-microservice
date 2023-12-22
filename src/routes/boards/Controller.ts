@@ -12,6 +12,7 @@ export class BoardsController extends Controller<IBoard> implements IBoardsContr
   public async getFromTeamId (req: Request, res: Response): Promise<Response> {
     const body = req.body
     const result = await this.service.getFromTeamId(req.params.teamId, body)
+
     if (!result) {
       return res.status(404)
         .json({ message: 'No Boards were found for the boardId provided, please make sure that the board exists' })

@@ -5,4 +5,6 @@ export interface ITasksController extends IController {
   readFromBoard: (req: Request, res: Response) => Promise<Response>
   updateMembers: (req: Request, res: Response) => Promise<Response>
   updateTags: (req: Request, res: Response) => Promise<Response>
+  createAndAddToBoard: (req: Request, res: Response) => Promise<Response>
+  updateAndCreateTaskUpdate: (req: Request, res: Response) => Promise<Response>
 }

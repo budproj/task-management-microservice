@@ -29,4 +29,8 @@ export abstract class AbstractRepository<T> implements IRepository<T> {
   public async delete (id: string): Promise<T | null> {
     return await this.model.findByIdAndDelete(id)
   }
+
+  public async get (id: string): Promise<T | null> {
+    return await this.model.findById(id)
+  }
 }

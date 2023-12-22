@@ -8,7 +8,13 @@ const boardSchema = new Schema<BoardDocument>({
   title: { type: String, required: true },
   teamsIds: [String],
   type: { type: String, required: true },
-  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
+  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
+  order: {
+    pending: [String],
+    toDo: [String],
+    doing: [String],
+    done: [String]
+  }
 }, {
   collection: 'boards',
   versionKey: false,

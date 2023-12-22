@@ -5,7 +5,7 @@ import { ITask } from '../../ts/interfaces'
 interface TaskDocument extends ITask, Document {}
 
 const taskSchema = new Schema<TaskDocument>({
-  boardId: { type: Schema.Types.ObjectId, required: true },
+  boardId: { type: Schema.Types.ObjectId, required: true, ref: 'Board' },
   status: { type: String, required: true }, // PENDING, TO_DO, DOING, DONE
   title: { type: String, required: true },
   description: { type: String, required: true },

@@ -49,4 +49,8 @@ export abstract class AbstractService<T> implements IService<T> {
   public async delete (id: string): Promise<T | null> {
     return await this.repository.delete(id)
   }
+
+  public async get (id: string): Promise<T | null> {
+    return await this.repository.get(id)
+  }
 }

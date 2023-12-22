@@ -6,4 +6,5 @@ export interface IRepository<T> {
   read: (skip: number, limit: number) => Promise<PaginateResult<T>>
   update: (id: string, data: Partial<T>) => Promise<T | null>
   delete: (id: string) => Promise<T | null>
+  get: (id: string) => Promise<T | null>
 }

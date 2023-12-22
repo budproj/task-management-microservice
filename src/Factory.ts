@@ -1,28 +1,40 @@
 import { Router } from 'express'
-import { boardModel, taskModel } from './database'
+import { boardModel, taskModel, taskUpdateModel } from './database'
 import { TasksRepository } from './repositories/TasksRepository'
 import { TasksService, TasksController, TasksRouter } from './routes/tasks'
 import * as middlewares from './middlewares'
 import * as validators from './validators'
 import { BoardsRepository } from './repositories/BoardsRepository'
 import { BoardsController, BoardsRouter, BoardsService } from './routes/boards'
+import { TaskUpdatesController, TaskUpdatesRouter, TaskUpdatesService } from './routes/task-updates'
+import { TaskUpdatesRepository } from './repositories/TaskUpdatesRepository'
 
 const tasksRepository = new TasksRepository(taskModel)
 const boardsRepository = new BoardsRepository(boardModel)
+const taskUpdatesRepository = new TaskUpdatesRepository(taskUpdateModel)
 
 class RoutersFactory {
   public createTasksRouter (): Router {
+    const taskUpdatesService = new TaskUpdatesService(taskUpdatesRepository)
+    const boardsService = new BoardsService(boardsRepository)
     const tasksService = new TasksService(tasksRepository)
-    const tasksController = new TasksController(tasksService)
+    const tasksController = new TasksController(tasksService, boardsService, taskUpdatesService)
     const tasksRouter = new TasksRouter(tasksController, middlewares, validators)
     return tasksRouter.router
   }
 
   public createBoardsRouter (): Router {
-    const boardService = new BoardsService(boardsRepository)
-    const boardsController = new BoardsController(boardService)
+    const boardsService = new BoardsService(boardsRepository)
+    const boardsController = new BoardsController(boardsService)
     const boardsRouter = new BoardsRouter(boardsController)
     return boardsRouter.router
+  }
+
+  public createTaskUpdatesRouter (): Router {
+    const taskUpdatesService = new TaskUpdatesService(taskUpdatesRepository)
+    const taskUpdatesController = new TaskUpdatesController(taskUpdatesService)
+    const taskUpdatesRouter = new TaskUpdatesRouter(taskUpdatesController)
+    return taskUpdatesRouter.router
   }
 }
 

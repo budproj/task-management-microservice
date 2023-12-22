@@ -12,20 +12,11 @@ export class TasksRouter {
     this.init()
   }
 
-  /*
-  About validateBody:
-  validateBody is a function that expects another function as argument (one that follows the TBodyValidator contract).
-  When we call validateBody with said function as argument, it will return a new function that will be used as middleware.
-  The new function will be called by express with the request, response and next, and will validate the body of the request
-  using the function we passed in the first place. This way we can have a generic "validateBody" middleware that can be used
-  for any request that has a body.
-  */
-
   public init (): void {
     this.router.post(
       '/',
-      this.middlewares.validateUser,
-      this.controller.create
+      // this.middlewares.validateUser,
+      this.controller.createAndAddToBoard
     )
 
     this.router.get('/', this.controller.read)
@@ -35,8 +26,8 @@ export class TasksRouter {
     this.router.patch(
       '/:id',
       this.middlewares.validatePathId,
-      this.middlewares.validateBody(this.validators.updateTaskValidator),
-      this.controller.update
+      // this.middlewares.validateBody(this.validators.updateTaskValidator),
+      this.controller.updateAndCreateTaskUpdate
     )
 
     this.router.patch(
