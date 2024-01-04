@@ -4,3 +4,4 @@ build
 .env
 coverage
 globalConfig.json
+db_data
