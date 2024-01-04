@@ -2,7 +2,7 @@ import { Document, Schema, model, PaginateModel } from 'mongoose'
 import paginate from 'mongoose-paginate-v2'
 import { ITask } from '../../ts/interfaces'
 
-interface TaskDocument extends ITask, Document {}
+type TaskDocument = ITask & Document
 
 const taskSchema = new Schema<TaskDocument>({
   boardId: { type: Schema.Types.ObjectId, required: true, ref: 'Board' },
