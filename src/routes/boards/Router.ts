@@ -1,16 +1,19 @@
 import { Router } from 'express'
-import { IBoardsController } from '../../ts/interfaces'
+import { IBoardsController, IMiddlewares } from '../../ts/interfaces'
 
 export class BoardsRouter {
   public router = Router()
 
   constructor (
-    private readonly controller: IBoardsController
+    private readonly controller: IBoardsController,
+    private readonly middlewares: IMiddlewares
   ) {
     this.init()
   }
 
   public init (): void {
+    this.router.use(this.middlewares.validateUser)
+
     this.router.post(
       '/',
       this.controller.create

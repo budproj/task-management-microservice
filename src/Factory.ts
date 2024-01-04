@@ -26,14 +26,14 @@ class RoutersFactory {
   public createBoardsRouter (): Router {
     const boardsService = new BoardsService(boardsRepository)
     const boardsController = new BoardsController(boardsService)
-    const boardsRouter = new BoardsRouter(boardsController)
+    const boardsRouter = new BoardsRouter(boardsController, middlewares)
     return boardsRouter.router
   }
 
   public createTaskUpdatesRouter (): Router {
     const taskUpdatesService = new TaskUpdatesService(taskUpdatesRepository)
     const taskUpdatesController = new TaskUpdatesController(taskUpdatesService)
-    const taskUpdatesRouter = new TaskUpdatesRouter(taskUpdatesController)
+    const taskUpdatesRouter = new TaskUpdatesRouter(taskUpdatesController, middlewares)
     return taskUpdatesRouter.router
   }
 }

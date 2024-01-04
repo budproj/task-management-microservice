@@ -13,9 +13,9 @@ export class TasksRouter {
   }
 
   public init (): void {
+    this.router.use(this.middlewares.validateUser)
     this.router.post(
       '/',
-      // this.middlewares.validateUser,
       this.controller.createAndAddToBoard
     )
 
