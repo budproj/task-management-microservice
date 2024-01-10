@@ -26,7 +26,7 @@ export default class AmqpConnection {
     })
 
     // Assert the exchange
-    channel.assertExchange(this.exchange, 'direct', { durable: false })
+    channel.assertExchange(this.exchange, 'topic')
 
     // Close the connection when the Node.js process exits
     process.on('exit', () => connection.close())
@@ -40,7 +40,7 @@ export default class AmqpConnection {
         connection.createChannel((channelErr, ch) => {
           if (channelErr) reject(channelErr)
 
-          ch.assertExchange(this.exchange, 'direct', { durable: false })
+          ch.assertExchange(this.exchange, 'topic')
 
           ch.assertQueue('', { exclusive: true }, (queueErr, q) => {
             if (queueErr) reject(queueErr)
@@ -74,7 +74,7 @@ export default class AmqpConnection {
         connection.createChannel((channelErr, ch) => {
           if (channelErr) reject(channelErr)
 
-          ch.assertExchange(this.exchange, 'direct', { durable: false })
+          ch.assertExchange(this.exchange, 'topic')
 
           // Send the message
           ch.publish(this.exchange, routingKey, Buffer.from(JSON.stringify(data)))
