@@ -19,17 +19,9 @@
     "compose:up": "docker-compose up --build -d",
     "compose:down": "docker-compose down --rmi local --volumes --remove-orphans"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GabrielGaspar447/Mamboo-Kanban-API.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/GabrielGaspar447/Mamboo-Kanban-API/issues"
-  },
-  "homepage": "https://github.com/GabrielGaspar447/Mamboo-Kanban-API#readme",
   "devDependencies": {
     "@types/amqplib": "^0.10.4",
     "@types/express": "^4.17.13",
@@ -43,8 +35,6 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
-    "git-commit-msg-linter": "^4.1.1",
-    "husky": "^7.0.4",
     "jest": "^27.5.1",
     "lint-staged": "^12.3.7",
     "mongodb-memory-server": "^8.4.2",
