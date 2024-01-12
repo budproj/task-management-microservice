@@ -12,7 +12,6 @@ export interface ITask {
   attachments: string[]
   supportTeamMembers: string[]
   tags: string[]
-  nextTaskId: Types.ObjectId
   createdAt: Date
   updatedAt: Date
 }

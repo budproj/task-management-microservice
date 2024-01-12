@@ -12,7 +12,7 @@ export class TasksRepository extends AbstractRepository<ITask> implements ITasks
   }
 
   public async updateMembers (id: string, operation: '$addToSet' | '$pull', value: string): Promise<ITask | null> {
-    return await this.model.findByIdAndUpdate(id, { [operation]: { members: value } }, { new: true })
+    return await this.model.findByIdAndUpdate(id, { [operation]: { supportTeamMembers: value } }, { new: true })
   }
 
   public async updateTags (id: string, operation: '$addToSet' | '$pull', value: string): Promise<ITask | null> {
