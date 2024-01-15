@@ -1,7 +1,8 @@
 import * as amqp from 'amqplib/callback_api'
+import { randomUUID } from 'crypto'
 
 export default class AmqpConnection {
-  private readonly rabbitmqUrl: string = 'amqp://localhost' // Replace with your RabbitMQ server URL
+  private readonly rabbitmqUrl: string = 'amqp://localhost'
   private readonly exchange: string = 'bud'
 
   constructor () {
@@ -32,35 +33,44 @@ export default class AmqpConnection {
     process.on('exit', () => connection.close())
   }
 
-  public async sendMessage<R>(channel: string, payload: unknown): Promise<R> {
-    return await new Promise((resolve, reject) => {
-      amqp.connect(this.rabbitmqUrl, (err, connection) => {
+  public async sendMessage<R>(queue: string, payload: unknown): Promise<R> {
+    const connection = await new Promise<amqp.Connection>((resolve, reject) => {
+      amqp.connect(this.rabbitmqUrl, (err, conn) => {
+        if (err) reject(err)
+        resolve(conn)
+      })
+    })
+    return await new Promise<R>((resolve, reject) => {
+      connection.createChannel((err, channel) => {
         if (err) reject(err)
 
-        connection.createChannel((channelErr, ch) => {
-          if (channelErr) reject(channelErr)
+        channel.assertQueue('', { exclusive: true }, (err, q) => {
+          if (err) reject(err)
 
-          ch.assertExchange(this.exchange, 'topic')
+          const correlationId = randomUUID()
 
-          ch.assertQueue('', { exclusive: true }, (queueErr, q) => {
-            if (queueErr) reject(queueErr)
+          channel.consume(
+            q.queue,
+            (msg) => {
+              if (msg?.properties.correlationId === correlationId) {
+                resolve(JSON.parse(msg.content.toString()) as R)
+                setTimeout(() => {
+                  connection.close()
+                  process.exit(0)
+                }, 500)
+              }
+            },
+            { noAck: true }
+          )
 
-            ch.bindQueue(q.queue, this.exchange, channel)
-
-            ch.consume(
-              q.queue,
-              (msg) => {
-                if (msg) {
-                  const response = JSON.parse(msg.content.toString()) as R
-                  resolve(response)
-                }
-              },
-              { noAck: true }
-            )
-
-            // Send the request
-            ch.publish(this.exchange, channel, Buffer.from(JSON.stringify(payload)))
+          channel.publish(this.exchange, queue, Buffer.from(JSON.stringify(payload)), {
+            correlationId: correlationId,
+            replyTo: q.queue
           })
+
+          setTimeout(() => {
+            reject(new Error('Request timed out'))
+          }, requestTimeout)
         })
       })
     })
@@ -85,3 +95,5 @@ export default class AmqpConnection {
     })
   }
 }
+
+const requestTimeout = 5000

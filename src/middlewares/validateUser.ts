@@ -14,8 +14,12 @@ export const validateUser = async (req: Request, res: Response, next: NextFuncti
 
   const decodedToken = await amqp.sendMessage('business.core-ports.verify-token', token) as any
 
+  if (!decodedToken || !decodedToken.sub) return res.status(401).json({ msg: 'Invalid or expired token' })
+
+  const user = await amqp.sendMessage('business.core-ports.get-user-with-teams-by-sub', decodedToken.sub) as any
+
   req = {
-    ...decodedToken.sub,
+    ...user,
     permissions: decodedToken.permissions
   }
 
