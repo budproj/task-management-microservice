@@ -14,14 +14,7 @@ export class BoardsRouter {
   public init (): void {
     this.router.use(this.middlewares.validateUser)
 
-    this.router.post(
-      '/',
-      this.controller.create
-    )
-
-    this.router.get('/', this.controller.read)
-
-    this.router.get('/team/:teamId', this.controller.getFromTeamId)
+    this.router.get('/', this.controller.getFromTeamId)
 
     this.router.patch(
       '/:id',

@@ -1,6 +1,6 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { Controller } from '../../ts/abstract_classes'
-import { IBoard, IBoardsController } from '../../ts/interfaces'
+import { BOARD_TYPE, IBoard, IBoardsController, Request } from '../../ts/interfaces'
 import { IBoardsService } from '../../ts/interfaces/routes/boards/Service'
 
 export class BoardsController extends Controller<IBoard> implements IBoardsController {
@@ -11,7 +11,9 @@ export class BoardsController extends Controller<IBoard> implements IBoardsContr
 
   public async getFromTeamId (req: Request, res: Response): Promise<Response> {
     const body = req.body
-    const result = await this.service.getFromTeamId(req.params.teamId, body)
+    const teamId = req.query.teamId
+    // When there are Boards related to entities other than Team we must make the type more flexible when creating a new Board
+    const result = await this.service.findOrCreateFromTeams([teamId], { ...body, type: BOARD_TYPE.TEAM_TASKS })
 
     if (!result) {
       return res.status(404)

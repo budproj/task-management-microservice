@@ -23,71 +23,6 @@
   ],
   "paths": {
     "/boards": {
-      "post": {
-        "tags": [
-          "board"
-        ],
-        "summary": "Realiza o cadastro de um board de tarefas para o time especificado",
-        "operationId": "create board",
-        "requestBody": {
-          "description": "Dados do board.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NOVO_BOARD"
-              },
-              "example": {
-                "title": "To Do",
-                "type": "TEAM_TASKS",
-                "teamsIds": [
-                  "625c670e01ee4e6f9d2c125c"
-                ],
-                "tasks": [],
-                "order": {
-                  "TO_DO": [],
-                  "IN_PROGRESS": [],
-                  "DONE": []
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Tarefa cadastrada com sucesso.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RESPOSTA_CADASTRO_TAREFA"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Algum dado informado não está de acordo com as regras do endpoint.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ERRO_VALIDACAO"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Erro interno, por favor tente novamente mais tarde ou contate o desenvolvedor.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ERRO_INTERNO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/boards/team/{teamId}": {
       "get": {
         "tags": [
           "board"
@@ -96,7 +31,7 @@
         "operationId": "list all boards from team",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "teamId",
             "description": "ID do time que gostaria de consultar os boards.",
             "required": true,

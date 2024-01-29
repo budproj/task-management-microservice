@@ -5,7 +5,7 @@ import { IBoard } from '../../ts/interfaces'
 interface BoardDocument extends IBoard, Document {}
 
 const boardSchema = new Schema<BoardDocument>({
-  title: { type: String, required: true },
+  title: { type: String, required: false },
   teamsIds: [String],
   type: { type: String, required: true },
   tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],

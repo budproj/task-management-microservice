@@ -7,11 +7,12 @@ export class BoardsRepository extends AbstractRepository<IBoard> implements IBoa
     return await this.model.paginate({}, { page, limit })
   }
 
-  public async getFromTeamId (teamId: string, body?: Partial<IBoard>): Promise<IBoard> {
-    const board = await this.model.findOne({ teamsIds: { $in: [teamId] } }).populate('tasks').exec()
+  // This method implements a lazy creation of a Board, if the Board doesn't exist it will be created
+  public async findOrCreateFromTeams (teamsIds: string[], body?: Partial<IBoard>): Promise<IBoard> {
+    const board = await this.model.findOne({ teamsIds: { $in: teamsIds } }).populate('tasks').exec()
 
     if (!board) {
-      return await this.model.create({ ...body, teamsIds: [teamId] })
+      return await (await this.model.create({ ...body, teamsIds })).populate('tasks')
     }
 
     return board

@@ -2,7 +2,7 @@ import { ITask } from '../tasks'
 
 export interface IBoard {
   id?: any
-  title: string
+  title?: string
   type: BOARD_TYPE
   teamsIds?: string[]
   tasks: ITask[]
@@ -16,7 +16,7 @@ export interface IBoard {
   updatedAt: Date
 }
 
-enum BOARD_TYPE {
+export enum BOARD_TYPE {
   TEAM_TASKS = 'TEAM_TASKS',
   PROJECT_TASKS = 'PROJECT_TASKS',
 }
