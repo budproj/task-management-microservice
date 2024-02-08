@@ -137,6 +137,7 @@
                 "title": "Update Swagger Documentation",
                 "description": "This task involves updating the Swagger documentation for our API.",
                 "dueDate": "2022-12-31T23:59:59.999Z",
+                "initialDate": "2023-01-05T19:14:22.579Z",
                 "priority": 1,
                 "owner": "507f1f77bcf86cd799439011",
                 "nextTaskId": "507f1f77bcf86cd799439012",
@@ -662,6 +663,7 @@
           "title",
           "description",
           "dueDate",
+          "initialDate",
           "priority",
           "owner",
           "attachments",
@@ -851,6 +853,10 @@
             "type": "string"
           },
           "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "initialDate": {
             "type": "string",
             "format": "date-time"
           },

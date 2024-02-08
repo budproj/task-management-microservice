@@ -7,6 +7,7 @@ export interface ITask {
   title: string
   description: string
   dueDate: Date
+  initialDate: Date
   priority: number
   owner: string
   attachments: string[]

@@ -1,7 +1,7 @@
 import { ITask } from '../tasks'
 
 export interface IBoard {
-  id?: any
+  _id?: any
   title?: string
   type: BOARD_TYPE
   teamsIds?: string[]

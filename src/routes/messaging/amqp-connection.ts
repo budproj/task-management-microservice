@@ -56,7 +56,6 @@ export default class AmqpConnection {
                 resolve(JSON.parse(msg.content.toString()) as R)
                 setTimeout(() => {
                   connection.close()
-                  process.exit(0)
                 }, 500)
               }
             },
