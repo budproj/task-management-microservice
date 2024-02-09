@@ -46,5 +46,5 @@ spec:
             - name: RABBITMQ_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
-                  name: task-management-microservice-canary
+                  name: task-management-microservice
                   key: rabbitmq-connection-string
