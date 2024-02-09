@@ -13,7 +13,7 @@ const app: Express = express() // Initialize express app
 app.use(cors())
 app.use(express.json()) // Parse all JSON in incoming requests so they can be used as JS objects
 
-app.get('/healthcheck', (_req, res) => res.status(200).send('API HEALTHY')) // API Healthcheck endpoint
+app.get('/healthcheck', (_req, res) => res.status(200).send('API HEALTHY :)')) // API Healthcheck endpoint
 
 app.use('/tasks', routersFactory.createTasksRouter()) // Mount the tasks router
 app.use('/boards', routersFactory.createBoardsRouter()) // Mount the boards router
