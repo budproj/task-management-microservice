@@ -15,11 +15,11 @@ spec:
     - match: Host(`api.getbud.co`) && PathPrefix(`/task-management`)
       kind: Rule
       middlewares:
-        - name: task-management-replace-root-path
+        - name: task-management-microservice-replace-root-path
       services:
         - name: task-management-microservice-stable
           port: 80
-    - match: Host(`api.canary.getbud.co`) && PathPrefix(`/routines`)
+    - match: Host(`api.canary.getbud.co`) && PathPrefix(`/task-management`)
       kind: Rule
       middlewares:
         - name: task-management-microservice-replace-root-path
@@ -29,7 +29,8 @@ spec:
   tls:
     certResolver: letsencrypt
     options:
-      minVersion: VersionTLS12
+      namespace: traefik-proxy
+      name: tls-options
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -38,5 +39,5 @@ metadata:
   name: task-management-microservice-replace-root-path
 spec:
   replacePathRegex:
-    regex: ^/task-management/(.*)
+    regex: ^/task-management/?(.*)
     replacement: /$1
