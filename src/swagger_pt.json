@@ -396,30 +396,12 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Tarefa deletada com sucesso.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RESPOSTA_ATUALIZACAO_TAREFA"
-                },
-                "example": {
-                  "_id": "625c670e01ee4e6f9d2c125c",
-                  "boardId": 1,
-                  "status": "DONE",
-                  "title": "Bake a cake",
-                  "description": "I am hungry and I want to eat a cake",
-                  "priority": 5,
-                  "members": [
-                    "Gabriel",
-                    "Thayná"
-                  ],
-                  "tags": [
-                    "Food",
-                    "Cook"
-                  ],
-                  "createdAt": "2022-04-17T19:14:22.579Z",
-                  "updatedAt": "2022-04-17T19:27:11.237Z"
+                  "$ref": "#/components/schemas/TAREFA_DELETADA"
                 }
               }
             }
@@ -990,6 +972,15 @@
           "message": {
             "type": "string",
             "example": "Task not found"
+          }
+        }
+      },
+      "TAREFA_DELETADA": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Task deleted successfully"
           }
         }
       },
