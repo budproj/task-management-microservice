@@ -19,6 +19,7 @@ export interface ITaskStateInterface {
   description: string
   supportTeam: string[]
   author?: IAuthor
+  status: string
 }
 
 export interface IAuthor {
@@ -36,6 +37,7 @@ export enum TaskPatchsKeys {
   addAttachment = 'addAttachment',
   deleteAttachment = 'deleteAttachment',
   supportTeam = 'supportTeam',
+  status = 'status'
 }
 
 export enum IAuthorType {
