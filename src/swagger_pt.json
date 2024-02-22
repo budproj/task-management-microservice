@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Task Management Microservice",
-    "description": "Este projeto foi desenvolvido como teste técnico do processo seletivo para a vaga de desenvolvedor backend da empresa Mamboo.<br><br>Esta API é um CRUD de tarefas de uma aplicação de quadro kanban.<br><br>Abaixo você irá encontrar toda a documentação referente ao funcionamento e utilização da API, podendo ainda fazer requisições aos endpoints listados através da interface gráfica da página.<br><br>Looking for the english documentation? Try `/docs/en` 😉.",
+    "description": "Esse projeto trata-se de um microserviço de gerenciamento de tarefas. Aqui é possível criar, listar, atualizar e deletar tarefas, além de listar boards de tarefas de um time específico.",
     "contact": {
       "email": "diego.magalhaes@getbud.co"
     },
@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3001"
+      "url": "https://api.canary.getbud.co/task-management"
     }
   ],
   "tags": [
@@ -396,30 +396,12 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Tarefa deletada com sucesso.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RESPOSTA_ATUALIZACAO_TAREFA"
-                },
-                "example": {
-                  "_id": "625c670e01ee4e6f9d2c125c",
-                  "boardId": 1,
-                  "status": "DONE",
-                  "title": "Bake a cake",
-                  "description": "I am hungry and I want to eat a cake",
-                  "priority": 5,
-                  "members": [
-                    "Gabriel",
-                    "Thayná"
-                  ],
-                  "tags": [
-                    "Food",
-                    "Cook"
-                  ],
-                  "createdAt": "2022-04-17T19:14:22.579Z",
-                  "updatedAt": "2022-04-17T19:27:11.237Z"
+                  "$ref": "#/components/schemas/TAREFA_DELETADA"
                 }
               }
             }
@@ -990,6 +972,15 @@
           "message": {
             "type": "string",
             "example": "Task not found"
+          }
+        }
+      },
+      "TAREFA_DELETADA": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Task deleted successfully"
           }
         }
       },

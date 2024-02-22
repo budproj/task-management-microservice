@@ -1,8 +1,9 @@
 import * as amqp from 'amqplib/callback_api'
 import { randomUUID } from 'crypto'
+import { logger } from '../../logger'
 
 export default class AmqpConnection {
-  private readonly rabbitmqUrl: string = 'amqp://localhost'
+  private readonly rabbitmqUrl: string = process.env.RABBITMQ_CONNECTION_STRING ?? 'amqp://localhost'
   private readonly exchange: string = 'bud'
 
   constructor () {
@@ -35,17 +36,27 @@ export default class AmqpConnection {
 
   public async sendMessage<R>(queue: string, payload: unknown): Promise<R> {
     const connection = await new Promise<amqp.Connection>((resolve, reject) => {
+      logger.info('Connecting to RabbitMQ')
       amqp.connect(this.rabbitmqUrl, (err, conn) => {
-        if (err) reject(err)
+        if (err) {
+          logger.error('Error connecting to RabbitMQ', err)
+          reject(err)
+        }
         resolve(conn)
       })
     })
     return await new Promise<R>((resolve, reject) => {
       connection.createChannel((err, channel) => {
-        if (err) reject(err)
+        if (err) {
+          logger.error('Error creating RabbitMQ channel', err)
+          reject(err)
+        }
 
         channel.assertQueue('', { exclusive: true }, (err, q) => {
-          if (err) reject(err)
+          if (err) {
+            logger.error('Error creating RabbitMQ queue', err)
+            reject(err)
+          }
 
           const correlationId = randomUUID()
 
@@ -78,7 +89,10 @@ export default class AmqpConnection {
   public async emit (routingKey: string, data: unknown): Promise<void> {
     return await new Promise((resolve, reject) => {
       amqp.connect(this.rabbitmqUrl, (err, connection) => {
-        if (err) reject(err)
+        if (err) {
+          logger.error('Error connecting to RabbitMQ', err)
+          reject(err)
+        }
 
         connection.createChannel((channelErr, ch) => {
           if (channelErr) reject(channelErr)

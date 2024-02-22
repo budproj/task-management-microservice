@@ -2,6 +2,7 @@ import { Response } from 'express'
 import { Controller } from '../../ts/abstract_classes'
 import { BOARD_TYPE, IBoard, IBoardsController, Request } from '../../ts/interfaces'
 import { IBoardsService } from '../../ts/interfaces/routes/boards/Service'
+import { logger } from '../../logger'
 
 export class BoardsController extends Controller<IBoard> implements IBoardsController {
   constructor (protected readonly service: IBoardsService) {
@@ -16,6 +17,7 @@ export class BoardsController extends Controller<IBoard> implements IBoardsContr
     const result = await this.service.findOrCreateFromTeams([teamId], { ...body, type: BOARD_TYPE.TEAM_TASKS })
 
     if (!result) {
+      logger.error('No Boards were found for the teamId provided, please make sure that the team exists')
       return res.status(404)
         .json({ message: 'No Boards were found for the boardId provided, please make sure that the board exists' })
     }
