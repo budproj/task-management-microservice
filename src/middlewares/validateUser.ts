@@ -18,7 +18,7 @@ export const validateUser = async (req: Request, res: Response, next: NextFuncti
 
   const user = await amqp.sendMessage('business.core-ports.get-user-with-teams-by-sub', decodedToken.sub) as any
 
-  req = {
+  req.user = {
     ...user,
     permissions: decodedToken.permissions
   }

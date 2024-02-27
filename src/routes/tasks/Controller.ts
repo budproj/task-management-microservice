@@ -65,7 +65,7 @@ export class TasksController extends Controller<ITask> implements ITasksControll
     const result = await this.service.update(req.params.id, req.body)
     if (!result) return res.status(404).json({ message: 'Error updating task' })
 
-    const taskUpdate = await this.taskUpdatesService.createTaskUpdates(task, req.body)
+    const taskUpdate = await this.taskUpdatesService.createTaskUpdates(task, req.body, req.user)
 
     if (!taskUpdate) return res.status(404).json({ message: 'Error creating created task update' })
 
