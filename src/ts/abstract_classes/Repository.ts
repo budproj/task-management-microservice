@@ -18,7 +18,7 @@ export abstract class AbstractRepository<T> implements IRepository<T> {
     return await this.model.create(data)
   }
 
-  public async read (page: number, limit: number): Promise<PaginateResult<T>> {
+  public async read (page: number, limit: number): Promise<PaginateResult<any>> {
     return await this.model.paginate({}, { page, limit }) // Here we are using the paginate method of paginate-v2 to paginate our data.
   }
 

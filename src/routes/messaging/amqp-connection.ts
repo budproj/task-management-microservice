@@ -27,11 +27,29 @@ export default class AmqpConnection {
       })
     })
 
+    // Listener
     // Assert the exchange
     channel.assertExchange(this.exchange, 'topic')
+    console.log('Im here bro')
+    const queueName = 'task-management-microservice.get-task'
+    const routingKey = 'task-management-microservice.get-task'
+    // 'task-management-microservice.get-task',
+
+    channel.assertExchange('bud', 'topic')// Maybe unnecessary?
+    channel.assertQueue(queueName)
+    channel.bindQueue(queueName, this.exchange, routingKey) // Maybe unnecessary?
+    channel.consume(queueName, async (msg: any) => {
+      if (msg !== null) {
+        console.log('Received message:', msg.content.toString())
+        channel.ack(msg)
+        channel.cancel('teste')
+      }
+    }, { consumerTag: 'teste' })
 
     // Close the connection when the Node.js process exits
+    console.log('Im here bro2')
     process.on('exit', () => connection.close())
+    console.log('Im here bro3')
   }
 
   public async sendMessage<R>(queue: string, payload: unknown): Promise<R> {
@@ -45,6 +63,7 @@ export default class AmqpConnection {
         resolve(conn)
       })
     })
+
     return await new Promise<R>((resolve, reject) => {
       connection.createChannel((err, channel) => {
         if (err) {
