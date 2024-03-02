@@ -20,6 +20,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       title: task.title,
       priority: task.priority,
       dueDate: task.dueDate,
+      initialDate: task.dueDate,
       owner: task.owner,
       description: task.description,
       supportTeam: task.supportTeamMembers,
@@ -36,13 +37,16 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
     })
   }
 
-  public async createTaskUpdates (oldTask: ITask, newTask: Partial<ITask>, userThatUpdated: any): Promise<ITaskUpdate> {
+  public async createTaskUpdates (oldTask: ITask, newTask: Partial<ITask>, userThatUpdated: any): Promise<ITaskUpdate | undefined> {
     const author = { type: IAuthorType.USER, identifier: userThatUpdated.id }
+
+    console.log({ newTask })
 
     const oldTaskstate = {
       title: oldTask.title,
       priority: oldTask.priority,
       dueDate: oldTask.dueDate,
+      initialDate: oldTask.initialDate,
       owner: oldTask.owner,
       description: oldTask.description,
       supportTeam: oldTask.supportTeamMembers,
@@ -53,6 +57,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       title: newTask.title ?? oldTask.title,
       priority: newTask.priority ?? oldTask.priority,
       dueDate: newTask.dueDate ?? oldTask.dueDate,
+      initialDate: newTask.initialDate ?? oldTask.initialDate,
       owner: newTask.owner ?? oldTask.owner,
       description: newTask.description ?? oldTask.description,
       supportTeam: newTask.supportTeamMembers ?? oldTask.supportTeamMembers,
@@ -65,12 +70,14 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       value: (newTask as any)[key]
     }))
 
-    return await this.repository.create({
-      taskId: oldTask.id,
-      author,
-      newState: newTaskState,
-      oldState: oldTaskstate,
-      patches: updatePatches
-    })
+    if (updatePatches.length > 0) {
+      return await this.repository.create({
+        taskId: oldTask.id,
+        author,
+        newState: newTaskState,
+        oldState: oldTaskstate,
+        patches: updatePatches
+      })
+    }
   }
 }

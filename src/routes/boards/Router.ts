@@ -21,6 +21,11 @@ export class BoardsRouter {
       this.controller.update
     )
 
+    this.router.patch(
+      '/:id/order',
+      this.controller.updateBoardOrder
+    )
+
     this.router.delete(
       '/:id',
       this.controller.delete

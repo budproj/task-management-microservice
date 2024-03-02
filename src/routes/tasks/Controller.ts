@@ -1,8 +1,7 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { Controller } from '../../ts/abstract_classes'
-import { IBoardsService, ITask, ITaskUpdatesService, ITasksController } from '../../ts/interfaces'
+import { IBoardsService, ITask, ITaskUpdatesService, ITasksController, RequestTask as Request } from '../../ts/interfaces'
 import { ITasksService } from '../../ts/interfaces/routes/tasks/Service'
-
 export class TasksController extends Controller<ITask> implements ITasksController {
   constructor (
     protected readonly service: ITasksService,
@@ -16,6 +15,8 @@ export class TasksController extends Controller<ITask> implements ITasksControll
     this.updateTags = this.updateTags.bind(this)
     this.createAndAddToBoard = this.createAndAddToBoard.bind(this)
     this.updateAndCreateTaskUpdate = this.updateAndCreateTaskUpdate.bind(this)
+    this.deleteWithCascade = this.deleteWithCascade.bind(this)
+    this.getTasks = this.getTasks.bind(this)
   }
 
   public async readFromBoard (req: Request, res: Response): Promise<Response> {
@@ -69,6 +70,25 @@ export class TasksController extends Controller<ITask> implements ITasksControll
 
     if (!taskUpdate) return res.status(404).json({ message: 'Error creating created task update' })
 
+    await this.boardsService.updateBoardWithTaskStatus(task.boardId.toString(), result)
+
     return res.status(200).json(result)
+  }
+
+  public async deleteWithCascade (req: Request, res: Response): Promise<void> {
+    const task = await this.service.get(req.params.id)
+    await this.delete(req, res)
+
+    if (task) {
+      await this.boardsService.deleteTaskInBoardOrder(task?.boardId.toString(), req.params.id)
+    }
+  }
+
+  public async getTasks (req: Request, res: Response): Promise<Response> {
+    const task = await this.service.get(req.query.id)
+
+    if (!task) return res.status(404).json({ message: 'Task not found' })
+
+    return res.status(200).json(task)
   }
 }
