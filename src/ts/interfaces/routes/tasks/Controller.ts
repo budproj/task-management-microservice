@@ -13,4 +13,5 @@ export interface ITasksController extends IController {
   createAndAddToBoard: (req: RequestTask, res: Response) => Promise<Response>
   updateAndCreateTaskUpdate: (req: RequestTask, res: Response) => Promise<Response>
   deleteWithCascade: (req: RequestTask, res: Response) => Promise<void>
+  getTasks: (req: RequestTask, res: Response) => Promise<Response>
 }
