@@ -13,12 +13,4 @@ export class BoardsService extends AbstractService<IBoard> implements IBoardsSer
   public async updateBoardWithNewTask (boardId: string, newTask: ITask): Promise<IBoard | null> {
     return await this.repository.updateBoardWithNewTask(boardId, newTask)
   }
-
-  public async updateBoardWithTaskStatus (boardId: string, newTask: ITask): Promise<IBoard | null> {
-    return await this.repository.updateBoardWithTaskStatus(boardId, newTask)
-  }
-
-  public async deleteTaskInBoardOrder (boardId: string, id: ITask['id']): Promise<IBoard | null> {
-    return await this.repository.deleteTaskInBoardOrder(boardId, id)
-  }
 }

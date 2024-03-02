@@ -32,12 +32,11 @@ export enum TaskPatchsKeys {
   title='title',
   priority= 'priority',
   dueDate = 'dueDate',
-  initialDate = 'initialDate',
   owner = 'owner',
   description = 'description',
   addAttachment = 'addAttachment',
   deleteAttachment = 'deleteAttachment',
-  supportTeamMembers = 'supportTeamMembers',
+  supportTeam = 'supportTeam',
   status = 'status'
 }
 
