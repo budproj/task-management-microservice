@@ -19,7 +19,7 @@ export class TasksRouter {
       this.controller.createAndAddToBoard
     )
 
-    this.router.get('/', this.controller.getTasks)
+    this.router.get('/', this.controller.read)
 
     this.router.get('/board/:boardId', this.controller.readFromBoard)
 
@@ -47,7 +47,7 @@ export class TasksRouter {
     this.router.delete(
       '/:id',
       this.middlewares.validatePathId,
-      this.controller.deleteWithCascade
+      this.controller.delete
     )
   }
 }

@@ -19,70 +19,15 @@ export class BoardsRepository extends AbstractRepository<IBoard> implements IBoa
   }
 
   public async updateBoardWithNewTask (boardId: string, newTask: ITask): Promise<IBoard | null> {
-    const orderField = {
-      [TASK_STATUS.pending]: 'order.pending',
-      [TASK_STATUS.toDo]: 'order.toDo',
-      [TASK_STATUS.doing]: 'order.doing',
-      [TASK_STATUS.done]: 'order.done'
-    }
-
-    const orderStatus = orderField[newTask.status]
-
     const board = await this.model.findByIdAndUpdate(
       boardId,
       {
         $push: { tasks: newTask.id },
         $addToSet: {
-          [orderStatus]: newTask.id
-        }
-      },
-
-      { new: true }
-    ).exec()
-
-    return board
-  }
-
-  public async updateBoardWithTaskStatus (boardId: string, task: ITask): Promise<IBoard | null> {
-    const orderField = {
-      [TASK_STATUS.pending]: 'order.pending',
-      [TASK_STATUS.toDo]: 'order.toDo',
-      [TASK_STATUS.doing]: 'order.doing',
-      [TASK_STATUS.done]: 'order.done'
-    }
-
-    const orderStatus = orderField[task.status]
-
-    const board = await this.model.findByIdAndUpdate(
-      boardId,
-      {
-        $addToSet: {
-          [orderStatus]: task.id
-        },
-        $pull: {
-          'order.pending': task.status !== TASK_STATUS.pending ? task.id : undefined,
-          'order.toDo': task.status !== TASK_STATUS.toDo ? task.id : undefined,
-          'order.doing': task.status !== TASK_STATUS.doing ? task.id : undefined,
-          'order.done': task.status !== TASK_STATUS.done ? task.id : undefined
-        }
-
-      },
-
-      { new: true }
-    ).exec()
-
-    return board
-  }
-
-  public async deleteTaskInBoardOrder (boardId: string, id: ITask['id']): Promise<IBoard | null> {
-    const board = await this.model.findByIdAndUpdate(
-      boardId,
-      {
-        $pull: {
-          'order.pending': id,
-          'order.toDo': id,
-          'order.doing': id,
-          'order.done': id
+          'order.pending': newTask.status === TASK_STATUS.pending ? newTask.id : undefined,
+          'order.toDo': newTask.status === TASK_STATUS.toDo ? newTask.id : undefined,
+          'order.doing': newTask.status === TASK_STATUS.doing ? newTask.id : undefined,
+          'order.done': newTask.status === TASK_STATUS.done ? newTask.id : undefined
         }
       },
 
