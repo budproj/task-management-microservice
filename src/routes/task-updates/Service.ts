@@ -35,7 +35,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
           picture: senderUserData.picture
         },
         task: {
-          id: task.id,
+          id: task.taskId,
           name: task.title
         }
       }
@@ -53,8 +53,8 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
 
   public async createTaskUpdateFromTask (task: ITask): Promise<ITaskUpdate> {
     const author = { type: IAuthorType.USER, identifier: task.owner }
-
     const state = {
+      taskId: task.id,
       title: task.title,
       priority: task.priority,
       dueDate: task.dueDate,
@@ -78,25 +78,6 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
 
     await this.sendAllNotifications(usersToNotificate, ownerData, state)
 
-    const notification = {
-      messageId: randomUUID(),
-      type: 'taskAssignInProject',
-      timestamp: new Date().toISOString(),
-      recipientId: ownerData.authzSub, // get authzSub from value
-      properties: {
-        sender: {
-          id: ownerData.authzSub,
-          name: ownerData.firstName,
-          picture: ownerData.picture
-        },
-        task: {
-          id: task.id,
-          name: state.title
-        }
-      }
-    }
-    await amqp.sendMessage('notifications-microservice.notification', notification) as any
-
     return await this.repository.create({
       taskId: task.id,
       author,
@@ -110,6 +91,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
     const author = { type: IAuthorType.USER, identifier: userThatUpdated.id }
 
     const oldTaskstate = {
+      taskId: oldTask.id,
       title: oldTask.title,
       priority: oldTask.priority,
       dueDate: oldTask.dueDate,
@@ -121,6 +103,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
     }
 
     const newTaskState = {
+      taskId: oldTask.id,
       title: newTask.title ?? oldTask.title,
       priority: newTask.priority ?? oldTask.priority,
       dueDate: newTask.dueDate ?? oldTask.dueDate,
