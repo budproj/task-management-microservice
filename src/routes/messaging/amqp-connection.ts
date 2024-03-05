@@ -64,10 +64,14 @@ export default class AmqpConnection {
             q.queue,
             (msg) => {
               if (msg?.properties.correlationId === correlationId) {
-                resolve(JSON.parse(msg.content.toString()) as R)
-                setTimeout(() => {
-                  connection.close()
-                }, 500)
+                try {
+                  resolve(JSON.parse(msg.content.toString()) as R)
+                  setTimeout(() => {
+                    connection.close()
+                  }, 500)
+                } catch (err) {
+                  resolve(JSON.parse('{}') as R)
+                }
               }
             },
             { noAck: true }

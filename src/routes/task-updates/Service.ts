@@ -3,7 +3,9 @@ import { ITask } from '../../ts/interfaces'
 import { IAuthorType, ITaskPatchInterface, ITaskUpdate, TaskPatchsKeys } from '../../ts/interfaces/entities/task-updates/TaskUpdate'
 import { ITaskUpdatesRepository } from '../../ts/interfaces/repositories/TaskUpdatesRepository'
 import { ITaskUpdatesService } from '../../ts/interfaces/routes/task-updates'
-
+import { randomUUID } from 'crypto'
+import { User } from '../../ts/interfaces/entities/users/User'
+import AmqpConnection from '../messaging/amqp-connection'
 export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements ITaskUpdatesService {
   constructor (protected readonly repository: ITaskUpdatesRepository) {
     super(repository)
@@ -11,6 +13,42 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
 
   public async getFromTaskId (id: string): Promise<ITaskUpdate[]> {
     return await this.repository.getFromTaskId(id)
+  }
+
+  private async sendOneNotification (user: string, senderUserData: User, task: any): Promise<any> {
+    const amqp = new AmqpConnection()
+    const userData = await amqp.sendMessage<User>(
+      'business.core-ports.get-user',
+      {
+        id: user
+      }
+    )
+    const notification = {
+      messageId: randomUUID(),
+      type: 'taskAssignInProject',
+      timestamp: new Date().toISOString(),
+      recipientId: userData.authzSub,
+      properties: {
+        sender: {
+          id: senderUserData.authzSub,
+          name: senderUserData.firstName,
+          picture: senderUserData.picture
+        },
+        task: {
+          id: task.id,
+          name: task.title
+        }
+      }
+    }
+    return await amqp.sendMessage('notifications-microservice.notification', notification) as any
+  }
+
+  private async sendAllNotifications (users: string[], senderUserData: User, task: any): Promise<any[]> {
+    const promises: Array<Promise<any>> = users.map(async user => {
+      return await this.sendOneNotification(user, senderUserData, task)
+    })
+    await Promise.all(promises)
+    return promises
   }
 
   public async createTaskUpdateFromTask (task: ITask): Promise<ITaskUpdate> {
@@ -28,6 +66,38 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       status: task.status
     }
 
+    // Quando tivermos o id de quem realizou a ação, é importante que ele não gere notificação para si mesmo
+    const amqp = new AmqpConnection()
+    const usersToNotificate = [...state.supportTeam, state.owner]
+
+    const ownerData = await amqp.sendMessage<any>(
+      'business.core-ports.get-user',
+      {
+        id: state.owner
+      }
+    )
+
+    await this.sendAllNotifications(usersToNotificate, ownerData, state)
+
+    const notification = {
+      messageId: randomUUID(),
+      type: 'taskAssignInProject',
+      timestamp: new Date().toISOString(),
+      recipientId: ownerData.authzSub, // get authzSub from value
+      properties: {
+        sender: {
+          id: ownerData.authzSub,
+          name: ownerData.firstName,
+          picture: ownerData.picture
+        },
+        task: {
+          id: task.id,
+          name: state.title
+        }
+      }
+    }
+    await amqp.sendMessage('notifications-microservice.notification', notification) as any
+
     return await this.repository.create({
       taskId: task.id,
       author,
@@ -39,8 +109,6 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
 
   public async createTaskUpdates (oldTask: ITask, newTask: Partial<ITask>, userThatUpdated: any): Promise<ITaskUpdate | undefined> {
     const author = { type: IAuthorType.USER, identifier: userThatUpdated.id }
-
-    console.log({ newTask })
 
     const oldTaskstate = {
       title: oldTask.title,
@@ -71,7 +139,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
     }))
 
     if (updatePatches.length > 0) {
-      return await this.repository.create({
+      await this.repository.create({
         taskId: oldTask.id,
         author,
         newState: newTaskState,
@@ -79,5 +147,27 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
         patches: updatePatches
       })
     }
+
+    const oldUsersToNotificate = [...oldTaskstate.supportTeam, oldTaskstate.owner]
+    const newUsersToNotificate = [...newTaskState.supportTeam, newTaskState.owner]
+    const usersToNotificate = newUsersToNotificate.filter(user => !oldUsersToNotificate.includes(user))
+    const amqp = new AmqpConnection()
+
+    const senderUserData = await amqp.sendMessage<any>(
+      'business.core-ports.get-user',
+      {
+        id: oldTaskstate.owner
+      }
+    )
+
+    await this.sendAllNotifications(usersToNotificate, senderUserData, newTaskState)
+
+    return await this.repository.create({
+      taskId: oldTask.id,
+      author,
+      newState: newTaskState,
+      oldState: oldTaskstate,
+      patches: updatePatches
+    })
   }
 }
