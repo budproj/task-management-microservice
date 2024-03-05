@@ -7,7 +7,7 @@ import swaggerDocumentPt from './swagger_pt.json'
 import swaggerDocumentEn from './swagger_en.json'
 import { errorHandler } from './middlewares'
 import { routersFactory } from './Factory'
-import setupAMQP from './amql_tst'
+import setupAMQP from './amqp_module'
 
 const app: Express = express() // Initialize express app
 
@@ -21,7 +21,7 @@ app.use('/boards', routersFactory.createBoardsRouter()) // Mount the boards rout
 app.use('/task-updates', routersFactory.createTaskUpdatesRouter()) // Mount the boards router
 
 // AMQP Listener setup
-setupAMQP()
+void setupAMQP()
 
 const swaggerOptions = { customSiteTitle: 'Mamboo Kanban API Docs' }
 app.use('/docs/pt', swaggerUi.serveFiles(swaggerDocumentPt), swaggerUi.setup(swaggerDocumentPt, swaggerOptions)) // Apply swagger to route /docs/pt for interactive documentation in portuguese.
