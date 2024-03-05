@@ -66,7 +66,6 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       status: task.status
     }
 
-    // Quando tivermos o id de quem realizou a ação, é importante que ele não gere notificação para si mesmo
     const amqp = new AmqpConnection()
     const usersToNotificate = [...state.supportTeam, state.owner]
 
