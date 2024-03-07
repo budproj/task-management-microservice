@@ -5,6 +5,7 @@ import { ITaskUpdatesRepository } from '../../ts/interfaces/repositories/TaskUpd
 import { ITaskUpdatesService } from '../../ts/interfaces/routes/task-updates'
 import { randomUUID } from 'crypto'
 import { User } from '../../ts/interfaces/entities/users/User'
+import { Team } from '../../ts/interfaces/entities/team/Team'
 import AmqpConnection from '../messaging/amqp-connection'
 export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements ITaskUpdatesService {
   constructor (protected readonly repository: ITaskUpdatesRepository) {
@@ -23,6 +24,10 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
         id: user
       }
     )
+    const companies = await amqp.sendMessage<Team[]>(
+      'business.core-ports.get-user-companies',
+      userData
+    )
     const notification = {
       messageId: randomUUID(),
       type: 'taskAssignInProject',
@@ -37,7 +42,9 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
         task: {
           id: task.taskId,
           name: task.title
-        }
+        },
+        taskBoard: task,
+        companyId: companies[0].id
       }
     }
     return await amqp.sendMessage('notifications-microservice.notification', notification) as any
@@ -54,7 +61,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
   public async createTaskUpdateFromTask (task: ITask): Promise<ITaskUpdate> {
     const author = { type: IAuthorType.USER, identifier: task.owner }
     const state = {
-      taskId: task.id,
+      _id: task.id,
       title: task.title,
       priority: task.priority,
       dueDate: task.dueDate,
