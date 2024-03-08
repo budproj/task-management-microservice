@@ -8,9 +8,7 @@ import { User } from '../../ts/interfaces/entities/users/User'
 import { boardModel } from '../../database/models'
 import AmqpConnection from '../messaging/amqp-connection'
 import { Team } from '../../ts/interfaces/entities/team/Team'
-import { Router } from 'express'
 import AmqpConnection from '../messaging/amqp-connection'
-import { validateUser } from '../../middlewares/validateUser'
 
 export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements ITaskUpdatesService {
   constructor (protected readonly repository: ITaskUpdatesRepository) {
@@ -35,8 +33,6 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       userData
     )
 
-    const bla = validateUser
-    console.log(bla)
     const notification = {
       messageId: randomUUID(),
       type: 'taskAssignInProject',
@@ -67,7 +63,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
     return promises
   }
 
-  public async createTaskUpdateFromTask (task: ITask): Promise<ITaskUpdate> {
+  public async createTaskUpdateFromTask (task: ITask, userThatUpdated: any): Promise<ITaskUpdate> {
     const author = { type: IAuthorType.USER, identifier: task.owner }
     const state = {
       _id: task.id,
@@ -83,17 +79,9 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       boardId: task.boardId
     }
 
-    const amqp = new AmqpConnection()
     const usersToNotificate = [...state.supportTeam, state.owner]
 
-    const ownerData = await amqp.sendMessage<any>(
-      'business.core-ports.get-user',
-      {
-        id: state.owner
-      }
-    )
-
-    await this.sendAllNotifications(usersToNotificate, ownerData, state)
+    await this.sendAllNotifications(usersToNotificate, userThatUpdated, state)
 
     return await this.repository.create({
       taskId: task.id,
@@ -152,16 +140,8 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
     const oldUsersToNotificate = [...oldTaskstate.supportTeam, oldTaskstate.owner]
     const newUsersToNotificate = [...newTaskState.supportTeam, newTaskState.owner]
     const usersToNotificate = newUsersToNotificate.filter(user => !oldUsersToNotificate.includes(user))
-    const amqp = new AmqpConnection()
 
-    const senderUserData = await amqp.sendMessage<any>(
-      'business.core-ports.get-user',
-      {
-        id: oldTaskstate.owner
-      }
-    )
-
-    await this.sendAllNotifications(usersToNotificate, senderUserData, newTaskState)
+    await this.sendAllNotifications(usersToNotificate, userThatUpdated, newTaskState)
 
     return await this.repository.create({
       taskId: oldTask.id,
