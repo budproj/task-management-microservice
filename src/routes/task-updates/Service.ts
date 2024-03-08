@@ -7,6 +7,10 @@ import { randomUUID } from 'crypto'
 import { User } from '../../ts/interfaces/entities/users/User'
 import { boardModel } from '../../database/models'
 import AmqpConnection from '../messaging/amqp-connection'
+import { Team } from '../../ts/interfaces/entities/team/Team'
+import { Router } from 'express'
+import AmqpConnection from '../messaging/amqp-connection'
+import { validateUser } from '../../middlewares/validateUser'
 
 export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements ITaskUpdatesService {
   constructor (protected readonly repository: ITaskUpdatesRepository) {
@@ -26,6 +30,13 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       }
     )
     const board = await boardModel.findById(task.boardId)
+    const companies = await amqp.sendMessage<Team[]>(
+      'business.core-ports.get-user-companies',
+      userData
+    )
+
+    const bla = validateUser
+    console.log(bla)
     const notification = {
       messageId: randomUUID(),
       type: 'taskAssignInProject',
