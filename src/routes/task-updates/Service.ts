@@ -97,7 +97,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
     const author = { type: IAuthorType.USER, identifier: userThatUpdated.id }
 
     const oldTaskstate = {
-      taskId: oldTask.id,
+      _id: oldTask.id,
       title: oldTask.title,
       priority: oldTask.priority,
       dueDate: oldTask.dueDate,
@@ -105,11 +105,12 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       owner: oldTask.owner,
       description: oldTask.description,
       supportTeam: oldTask.supportTeamMembers,
-      status: oldTask.status
+      status: oldTask.status,
+      boardId: oldTask.boardId
     }
 
     const newTaskState = {
-      taskId: oldTask.id,
+      _id: oldTask.id,
       title: newTask.title ?? oldTask.title,
       priority: newTask.priority ?? oldTask.priority,
       dueDate: newTask.dueDate ?? oldTask.dueDate,
@@ -117,7 +118,8 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       owner: newTask.owner ?? oldTask.owner,
       description: newTask.description ?? oldTask.description,
       supportTeam: newTask.supportTeamMembers ?? oldTask.supportTeamMembers,
-      status: newTask.status ?? oldTask.status
+      status: newTask.status ?? oldTask.status,
+      boardId: newTask.boardId ?? oldTask.boardId
     }
 
     const updatePatches: ITaskPatchInterface[] = Object.keys(newTask).filter(key => key !== '_id').map((key) => ({

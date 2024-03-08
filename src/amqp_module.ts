@@ -1,5 +1,5 @@
 import * as amqp from 'amqplib/callback_api'
-import { taskModel } from './database/models'
+import { taskModel, boardModel } from './database/models'
 import AmqpConnection from './routes/messaging/amqp-connection'
 
 export default async function setupAMQP (): Promise<void> {
@@ -26,6 +26,7 @@ export default async function setupAMQP (): Promise<void> {
       try {
         const data = JSON.parse(msg.content.toString())
         const task = await taskModel.findById(data.id)
+        const board = await boardModel.findById(task?.boardId)
 
         if (task) {
           const amqpSender = new AmqpConnection()
@@ -34,7 +35,8 @@ export default async function setupAMQP (): Promise<void> {
             {
               userThatCommented: data.user,
               taskThatReceivedComment: task,
-              comment: data.comment
+              comment: data.comment,
+              teamId: board?.teamsIds
             }
           )
           channel.ack(msg)
