@@ -6,7 +6,6 @@ import { ITaskUpdatesService } from '../../ts/interfaces/routes/task-updates'
 import { randomUUID } from 'crypto'
 import { User } from '../../ts/interfaces/entities/users/User'
 import { boardModel } from '../../database/models'
-import { Team } from '../../ts/interfaces/entities/team/Team'
 import AmqpConnection from '../messaging/amqp-connection'
 
 export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements ITaskUpdatesService {
