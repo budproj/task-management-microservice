@@ -121,8 +121,14 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       value: (newTask as any)[key]
     }))
 
+    const oldUsersToNotificate = [...oldTaskstate.supportTeam, oldTaskstate.owner]
+    const newUsersToNotificate = [...newTaskState.supportTeam, newTaskState.owner]
+    const usersToNotificate = newUsersToNotificate.filter(user => !oldUsersToNotificate.includes(user))
+
+    await this.sendAllNotifications(usersToNotificate, userThatUpdated, newTaskState)
+
     if (updatePatches.length > 0) {
-      await this.repository.create({
+      return await this.repository.create({
         taskId: oldTask.id,
         author,
         newState: newTaskState,
@@ -130,19 +136,5 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
         patches: updatePatches
       })
     }
-
-    const oldUsersToNotificate = [...oldTaskstate.supportTeam, oldTaskstate.owner]
-    const newUsersToNotificate = [...newTaskState.supportTeam, newTaskState.owner]
-    const usersToNotificate = newUsersToNotificate.filter(user => !oldUsersToNotificate.includes(user))
-
-    await this.sendAllNotifications(usersToNotificate, userThatUpdated, newTaskState)
-
-    return await this.repository.create({
-      taskId: oldTask.id,
-      author,
-      newState: newTaskState,
-      oldState: oldTaskstate,
-      patches: updatePatches
-    })
   }
 }

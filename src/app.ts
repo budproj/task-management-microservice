@@ -21,6 +21,7 @@ app.use('/boards', routersFactory.createBoardsRouter()) // Mount the boards rout
 app.use('/task-updates', routersFactory.createTaskUpdatesRouter()) // Mount the boards router
 
 // AMQP Listener setup
+// TODO: use same amqp module through all app
 void setupAMQP()
 
 const swaggerOptions = { customSiteTitle: 'Mamboo Kanban API Docs' }
