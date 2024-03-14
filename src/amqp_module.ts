@@ -3,7 +3,7 @@ import { taskModel, boardModel } from './database/models'
 import AmqpConnection from './routes/messaging/amqp-connection'
 
 export default async function setupAMQP (): Promise<void> {
-  const rabbitmqUrl = 'amqp://localhost'
+  const rabbitmqUrl = process.env.RABBITMQ_CONNECTION_STRING ?? 'amqp://localhost'
   const queueName = 'task-management-microservice.comment-in-task'
   const routingKey = 'task-management-microservice.comment-in-task'
   const connection = await new Promise<amqp.Connection>((resolve, reject) => {

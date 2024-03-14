@@ -22,7 +22,7 @@ app.use('/task-updates', routersFactory.createTaskUpdatesRouter()) // Mount the 
 
 // AMQP Listener setup
 // TODO: use same amqp module through all app
-// void setupAMQP()
+void setupAMQP()
 
 const swaggerOptions = { customSiteTitle: 'Mamboo Kanban API Docs' }
 app.use('/docs/pt', swaggerUi.serveFiles(swaggerDocumentPt), swaggerUi.setup(swaggerDocumentPt, swaggerOptions)) // Apply swagger to route /docs/pt for interactive documentation in portuguese.
