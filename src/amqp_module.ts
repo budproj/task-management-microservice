@@ -18,10 +18,10 @@ export default async function setupAMQP (): Promise<void> {
       else resolve(ch)
     })
   })
-  channel.assertExchange('bud', 'topic')
-  channel.assertQueue(queueName)
-  channel.bindQueue(queueName, 'bud', routingKey)
-  channel.consume(queueName, async (msg: any) => {
+  // channel.assertExchange('bud', 'topic')
+  // channel.assertQueue(queueName)
+  // channel.bindQueue(queueName, 'bud', routingKey)
+  await channel.consume(queueName, async (msg: any) => {
     if (msg !== null) {
       try {
         const data = JSON.parse(msg.content.toString())
@@ -48,3 +48,5 @@ export default async function setupAMQP (): Promise<void> {
     }
   }, { consumerTag: 'teste' })
 }
+
+// https://dev.to/omardiaa48/microservices-with-expressjs-and-rabbitmq-34dk
