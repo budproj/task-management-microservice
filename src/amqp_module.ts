@@ -36,7 +36,7 @@ export default async function setupAMQP (): Promise<void> {
               userThatCommented: data.user,
               taskThatReceivedComment: task,
               comment: data.comment,
-              teamId: board?.teamsIds
+              teamId: board?.teamsIds?.[0]
             }
           )
           channel.ack(msg)
