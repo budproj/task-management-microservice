@@ -43,7 +43,7 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
           name: task.title
         },
         taskBoard: task,
-        teamId: board?.teamsIds
+        teamId: board?.teamsIds?.[0]
       }
     }
     return await amqp.sendMessage('notifications-microservice.notification', notification) as any

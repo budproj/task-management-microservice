@@ -5,7 +5,7 @@ import AmqpConnection from './routes/messaging/amqp-connection'
 export default async function setupAMQP (): Promise<void> {
   const rabbitmqUrl = process.env.RABBITMQ_CONNECTION_STRING ?? 'amqp://localhost'
   const queueName = 'task-management-microservice.comment-in-task'
-  const routingKey = 'task-management-microservice.comment-in-task'
+  // const routingKey = 'task-management-microservice.comment-in-task'
   const connection = await new Promise<amqp.Connection>((resolve, reject) => {
     amqp.connect(rabbitmqUrl, (err, conn) => {
       if (err) reject(err)
@@ -44,6 +44,17 @@ export default async function setupAMQP (): Promise<void> {
         }
       } catch (error) {
         console.error('Error finding task in database:', error)
+        const amqpSender = new AmqpConnection()
+        await amqpSender.sendMessage(
+          'business.notification-ports.comment-in-task-notification',
+          {
+            userThatCommented: { id: 'auth0|auth0|6243762bdf154e0068d272d7', name: 'Igor Omote', picture: 'https://s3-sa-east-1.amazonaws.com/business.s3.getbud.co/user/pictures/335cd9ee-e5df-402c-a268-6c7a96ee7801-1657539472265.jpeg' },
+            taskThatReceivedComment: { id: '65e08a748b491e52ee118057', name: 'asdada' },
+            comment: { id: '84b754d4-ebab-4d29-8f7b-79de03dcba0b', content: '@[Igor Omote](a1c6f8ab-4b70-4b65-8341-445a3aaa4920) que hoje tem campeonato' },
+            teamId: '0342b8f6-3a07-4f2b-a3fa-a3a8ca8fa61f'
+          }
+
+        )
       }
     }
   }, { consumerTag: 'teste' })
