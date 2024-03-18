@@ -8,14 +8,36 @@ export default async function setupAMQP (): Promise<void> {
   // const routingKey = 'task-management-microservice.comment-in-task'
   const connection = await new Promise<amqp.Connection>((resolve, reject) => {
     amqp.connect(rabbitmqUrl, (err, conn) => {
-      if (err) reject(err)
-      else resolve(conn)
+      if (err) {
+        const amqpSender = new AmqpConnection()
+        void amqpSender.sendMessage(
+          'business.notification-ports.comment-in-task-notification',
+          {
+            userThatCommented: { id: 'auth0|auth0|6243762bdf154e0068d272d7', name: 'Igor Omote', picture: 'https://s3-sa-east-1.amazonaws.com/business.s3.getbud.co/user/pictures/335cd9ee-e5df-402c-a268-6c7a96ee7801-1657539472265.jpeg' },
+            taskThatReceivedComment: { id: '65e08a748b491e52ee118057', name: 'connect' },
+            comment: { id: '84b754d4-ebab-4d29-8f7b-79de03dcba0b', content: err },
+            teamId: '0342b8f6-3a07-4f2b-a3fa-a3a8ca8fa61f'
+          }
+        )
+        reject(err)
+      } else resolve(conn)
     })
   })
   const channel = await new Promise<amqp.Channel>((resolve, reject) => {
     connection.createChannel((err, ch) => {
-      if (err) reject(err)
-      else resolve(ch)
+      if (err) {
+        const amqpSender = new AmqpConnection()
+        void amqpSender.sendMessage(
+          'business.notification-ports.comment-in-task-notification',
+          {
+            userThatCommented: { id: 'auth0|auth0|6243762bdf154e0068d272d7', name: 'Igor Omote', picture: 'https://s3-sa-east-1.amazonaws.com/business.s3.getbud.co/user/pictures/335cd9ee-e5df-402c-a268-6c7a96ee7801-1657539472265.jpeg' },
+            taskThatReceivedComment: { id: '65e08a748b491e52ee118057', name: 'channel' },
+            comment: { id: '84b754d4-ebab-4d29-8f7b-79de03dcba0b', content: err },
+            teamId: '0342b8f6-3a07-4f2b-a3fa-a3a8ca8fa61f'
+          }
+        )
+        reject(err)
+      } else resolve(ch)
     })
   })
   // channel.assertExchange('bud', 'topic')
@@ -49,11 +71,10 @@ export default async function setupAMQP (): Promise<void> {
           'business.notification-ports.comment-in-task-notification',
           {
             userThatCommented: { id: 'auth0|auth0|6243762bdf154e0068d272d7', name: 'Igor Omote', picture: 'https://s3-sa-east-1.amazonaws.com/business.s3.getbud.co/user/pictures/335cd9ee-e5df-402c-a268-6c7a96ee7801-1657539472265.jpeg' },
-            taskThatReceivedComment: { id: '65e08a748b491e52ee118057', name: 'asdada' },
+            taskThatReceivedComment: { id: '65e08a748b491e52ee118057', name: 'consume' },
             comment: { id: '84b754d4-ebab-4d29-8f7b-79de03dcba0b', content: error },
             teamId: '0342b8f6-3a07-4f2b-a3fa-a3a8ca8fa61f'
           }
-
         )
       }
     }
