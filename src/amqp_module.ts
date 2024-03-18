@@ -93,7 +93,7 @@ export default async function setupAMQP (): Promise<void> {
     }
     amqpSender.sendMessage('notifications-microservice.notification', notification) as any
     if (msg !== null) {
-      const amqpSender = new AmqpConnection()
+      // const amqpSender = new AmqpConnection()
       const notification = {
         messageId: randomUUID(),
         type: 'provingSomething',
@@ -120,7 +120,7 @@ export default async function setupAMQP (): Promise<void> {
         //   fields: Object,
         //   properties: Object
         // }
-        const amqpSender = new AmqpConnection()
+        // const amqpSender = new AmqpConnection()
         const notificationInit = {
           messageId: randomUUID(),
           type: 'notificationInit',
@@ -223,8 +223,7 @@ export default async function setupAMQP (): Promise<void> {
             },
             taskBoard: { _id: '65f83ef2275dbdbe1328502f', owner: '825112f5-6da7-4d92-a845-79a3ea355fd4', title: 'bom dia sua máquina de construir músculo', author: { type: 'USER', identifier: '825112f5-6da7-4d92-a845-79a3ea355fd4' }, status: 'toDo', boardId: '65c6585c4ae33e74c9c49a4d', dueDate: '1112-11-11T03:06:28.000Z', priority: 4, description: '<p>bom dia sua máquina de construir músculo</p>', initialDate: '1112-11-11T03:06:28.000Z', supportTeam: [] },
             teamId: '0342b8f6-3a07-4f2b-a3fa-a3a8ca8fa61f'
-          },
-          message: data
+          }
         }
         await amqpSender.sendMessage('notifications-microservice.notification', notificationParse) as any
         const task = await taskModel.findById(data.content.id)
@@ -246,6 +245,7 @@ export default async function setupAMQP (): Promise<void> {
             taskBoard: { _id: '65f83ef2275dbdbe1328502f', owner: '825112f5-6da7-4d92-a845-79a3ea355fd4', title: 'bom dia sua máquina de construir músculo', author: { type: 'USER', identifier: '825112f5-6da7-4d92-a845-79a3ea355fd4' }, status: 'toDo', boardId: '65c6585c4ae33e74c9c49a4d', dueDate: '1112-11-11T03:06:28.000Z', priority: 4, description: '<p>bom dia sua máquina de construir músculo</p>', initialDate: '1112-11-11T03:06:28.000Z', supportTeam: [] },
             teamId: '0342b8f6-3a07-4f2b-a3fa-a3a8ca8fa61f'
           },
+          dataContentId: data.content.id,
           message: task
         }
         await amqpSender.sendMessage('notifications-microservice.notification', notificationTask) as any
@@ -273,7 +273,7 @@ export default async function setupAMQP (): Promise<void> {
         await amqpSender.sendMessage('notifications-microservice.notification', notificationBoard) as any
 
         if (task) {
-          const amqpSender = new AmqpConnection()
+          // const amqpSender = new AmqpConnection()
           const notification = {
             messageId: randomUUID(),
             type: 'provingSomething',
@@ -308,7 +308,7 @@ export default async function setupAMQP (): Promise<void> {
         }
       } catch (error) {
         console.error('Error finding task in database:', error)
-        const amqpSender = new AmqpConnection()
+        // const amqpSender = new AmqpConnection()
         const notification = {
           messageId: randomUUID(),
           type: 'provingSomething',
