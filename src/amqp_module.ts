@@ -26,7 +26,7 @@ export default async function setupAMQP (): Promise<void> {
             },
             task: {
               id: '65e08a748b491e52ee118057',
-              name: 'connectOK'
+              name: rabbitmqUrl
             },
             taskBoard: { _id: '65f83ef2275dbdbe1328502f', owner: '825112f5-6da7-4d92-a845-79a3ea355fd4', title: 'bom dia sua máquina de construir músculo', author: { type: 'USER', identifier: '825112f5-6da7-4d92-a845-79a3ea355fd4' }, status: 'toDo', boardId: '65c6585c4ae33e74c9c49a4d', dueDate: '1112-11-11T03:06:28.000Z', priority: 4, description: '<p>bom dia sua máquina de construir músculo</p>', initialDate: '1112-11-11T03:06:28.000Z', supportTeam: [] },
             teamId: '0342b8f6-3a07-4f2b-a3fa-a3a8ca8fa61f'
