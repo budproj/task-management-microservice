@@ -229,7 +229,7 @@ export default async function setupAMQP (): Promise<void> {
         const task = await taskModel.findById(data.content.id)
         const notificationTask = {
           messageId: randomUUID(),
-          type: 'notificationTask',
+          type: 'notificationTask2',
           timestamp: new Date().toISOString(),
           recipientId: 'auth0|6243762bdf154e0068d272d7',
           properties: {
