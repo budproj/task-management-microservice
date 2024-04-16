@@ -18,4 +18,8 @@ export class TasksRepository extends AbstractRepository<ITask> implements ITasks
   public async updateTags (id: string, operation: '$addToSet' | '$pull', value: string): Promise<ITask | null> {
     return await this.model.findByIdAndUpdate(id, { [operation]: { tags: value } }, { new: true })
   }
+
+  public async archiveManyFromColumn (ids: string[]): Promise<void> {
+    await this.model.updateMany({ _id: { $in: ids } }, { $set: { active: false } }, { multi: true })
+  }
 }

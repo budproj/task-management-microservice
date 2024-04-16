@@ -14,8 +14,10 @@ export class BoardsController extends Controller<IBoard> implements IBoardsContr
   public async getFromTeamId (req: Request, res: Response): Promise<Response> {
     const body = req.body
     const teamId = req.query.teamId
+    const archived = !!req.query.archived
+
     // When there are Boards related to entities other than Team we must make the type more flexible when creating a new Board
-    const result = await this.service.findOrCreateFromTeams([teamId], { ...body, type: BOARD_TYPE.TEAM_TASKS })
+    const result = await this.service.findOrCreateFromTeams([teamId], { ...body, type: BOARD_TYPE.TEAM_TASKS }, !archived)
 
     if (!result) {
       logger.error('No Boards were found for the teamId provided, please make sure that the team exists')

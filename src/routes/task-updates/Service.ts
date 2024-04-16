@@ -40,8 +40,6 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
   public async createTaskUpdates (oldTask: ITask, newTask: Partial<ITask>, userThatUpdated: any): Promise<ITaskUpdate | undefined> {
     const author = { type: IAuthorType.USER, identifier: userThatUpdated.id }
 
-    console.log({ newTask })
-
     const oldTaskstate = {
       title: oldTask.title,
       priority: oldTask.priority,

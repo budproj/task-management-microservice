@@ -15,6 +15,7 @@ export interface ITask {
   tags: string[]
   createdAt: Date
   updatedAt: Date
+  active: boolean
 }
 
 export enum TASK_STATUS {

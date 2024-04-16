@@ -31,6 +31,11 @@ export class TasksRouter {
     )
 
     this.router.patch(
+      '/:id/archive',
+      this.controller.archiveManyFromColumn
+    )
+
+    this.router.patch(
       '/:id/members',
       this.middlewares.validatePathId,
       this.middlewares.validateBody(this.validators.updateTaskMembersOrTagsValidator),

@@ -17,6 +17,8 @@ export class TasksController extends Controller<ITask> implements ITasksControll
     this.updateAndCreateTaskUpdate = this.updateAndCreateTaskUpdate.bind(this)
     this.deleteWithCascade = this.deleteWithCascade.bind(this)
     this.getTasks = this.getTasks.bind(this)
+    this.archiveManyFromColumn = this.archiveManyFromColumn.bind(this)
+    this.deleteManyFromColumn = this.deleteManyFromColumn.bind(this)
   }
 
   public async readFromBoard (req: Request, res: Response): Promise<Response> {
@@ -90,5 +92,31 @@ export class TasksController extends Controller<ITask> implements ITasksControll
     if (!task) return res.status(404).json({ message: 'Task not found' })
 
     return res.status(200).json(task)
+  }
+
+  public async archiveManyFromColumn (req: Request, res: Response): Promise<Response> {
+    // const board = await this.service.get(req.params.id)
+    // if (!board) return res.status(404).json({ message: 'Board not found' })
+
+    const { ids } = req.body
+
+    const result = await this.service.archiveManyFromColumn(ids)
+
+    return res.status(200).json(result)
+  }
+
+  public async deleteManyFromColumn (req: Request, res: Response): Promise<Response> {
+    const board = await this.service.get(req.params.id)
+    if (!board) return res.status(404).json({ message: 'Board not found' })
+
+    const { column } = req.body
+
+    // const boardWithNewOrder: IBoard = { ...board, order: { [column]: order, ...board.order } }
+
+    const result = await this.service.update(req.params.id, column)
+
+    if (!result) return res.status(404).json({ message: 'Error updating board' })
+
+    return res.status(200).json(result)
   }
 }

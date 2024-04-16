@@ -16,7 +16,8 @@ const taskSchema = new Schema<TaskDocument>(
     owner: { type: String, required: true },
     attachments: [String],
     supportTeamMembers: [String],
-    tags: [String]
+    tags: [String],
+    active: { type: Boolean, default: true }
   },
   {
     collection: 'tasks',
