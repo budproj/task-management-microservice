@@ -95,9 +95,6 @@ export class TasksController extends Controller<ITask> implements ITasksControll
   }
 
   public async archiveManyFromColumn (req: Request, res: Response): Promise<Response> {
-    // const board = await this.service.get(req.params.id)
-    // if (!board) return res.status(404).json({ message: 'Board not found' })
-
     const { ids } = req.body
 
     const result = await this.service.archiveManyFromColumn(ids)
@@ -106,16 +103,19 @@ export class TasksController extends Controller<ITask> implements ITasksControll
   }
 
   public async deleteManyFromColumn (req: Request, res: Response): Promise<Response> {
-    const board = await this.service.get(req.params.id)
-    if (!board) return res.status(404).json({ message: 'Board not found' })
+    const { ids } = req.body
 
-    const { column } = req.body
+    const result = await this.service.deleteManyFromColumn(ids)
 
-    // const boardWithNewOrder: IBoard = { ...board, order: { [column]: order, ...board.order } }
+    if (ids.length > 0) {
+      const task = await this.service.get(ids[0])
 
-    const result = await this.service.update(req.params.id, column)
-
-    if (!result) return res.status(404).json({ message: 'Error updating board' })
+      if (task) {
+        await ids.map(async (id: string) =>
+          await this.boardsService.deleteTaskInBoardOrder(task?.boardId.toString(), id)
+        )
+      }
+    }
 
     return res.status(200).json(result)
   }

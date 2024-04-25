@@ -54,5 +54,10 @@ export class TasksRouter {
       this.middlewares.validatePathId,
       this.controller.deleteWithCascade
     )
+
+    this.router.delete(
+      '/:id/delete',
+      this.controller.deleteManyFromColumn
+    )
   }
 }

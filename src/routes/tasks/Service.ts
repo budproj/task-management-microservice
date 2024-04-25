@@ -23,4 +23,8 @@ export class TasksService extends AbstractService<ITask> implements ITasksServic
   public async archiveManyFromColumn (ids: string[]): Promise<void> {
     return await this.repository.archiveManyFromColumn(ids)
   }
+
+  public async deleteManyFromColumn (ids: string[]): Promise<void> {
+    return await this.repository.deleteManyFromColumn(ids)
+  }
 }

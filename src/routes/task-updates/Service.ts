@@ -48,7 +48,8 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       owner: oldTask.owner,
       description: oldTask.description,
       supportTeam: oldTask.supportTeamMembers,
-      status: oldTask.status
+      status: oldTask.status,
+      active: oldTask.active
     }
 
     const newTaskState = {
@@ -59,7 +60,8 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       owner: newTask.owner ?? oldTask.owner,
       description: newTask.description ?? oldTask.description,
       supportTeam: newTask.supportTeamMembers ?? oldTask.supportTeamMembers,
-      status: newTask.status ?? oldTask.status
+      status: newTask.status ?? oldTask.status,
+      active: newTask.active ?? oldTask.active
     }
 
     const updatePatches: ITaskPatchInterface[] = Object.keys(newTask).filter(key => key !== '_id').map((key) => ({
@@ -67,6 +69,8 @@ export class TaskUpdatesService extends AbstractService<ITaskUpdate> implements 
       key: TaskPatchsKeys[key as keyof typeof TaskPatchsKeys],
       value: (newTask as any)[key]
     }))
+
+    console.log({ updatePatches })
 
     if (updatePatches.length > 0) {
       return await this.repository.create({

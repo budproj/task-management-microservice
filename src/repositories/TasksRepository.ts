@@ -22,4 +22,8 @@ export class TasksRepository extends AbstractRepository<ITask> implements ITasks
   public async archiveManyFromColumn (ids: string[]): Promise<void> {
     await this.model.updateMany({ _id: { $in: ids } }, { $set: { active: false } }, { multi: true })
   }
+
+  public async deleteManyFromColumn (ids: string[]): Promise<void> {
+    await this.model.deleteMany({ _id: { $in: ids } })
+  }
 }
