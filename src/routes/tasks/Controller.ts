@@ -17,6 +17,8 @@ export class TasksController extends Controller<ITask> implements ITasksControll
     this.updateAndCreateTaskUpdate = this.updateAndCreateTaskUpdate.bind(this)
     this.deleteWithCascade = this.deleteWithCascade.bind(this)
     this.getTasks = this.getTasks.bind(this)
+    this.archiveManyFromColumn = this.archiveManyFromColumn.bind(this)
+    this.deleteManyFromColumn = this.deleteManyFromColumn.bind(this)
   }
 
   public async readFromBoard (req: Request, res: Response): Promise<Response> {
@@ -90,5 +92,31 @@ export class TasksController extends Controller<ITask> implements ITasksControll
     if (!task) return res.status(404).json({ message: 'Task not found' })
 
     return res.status(200).json(task)
+  }
+
+  public async archiveManyFromColumn (req: Request, res: Response): Promise<Response> {
+    const { ids } = req.body
+
+    const result = await this.service.archiveManyFromColumn(ids)
+
+    return res.status(200).json(result)
+  }
+
+  public async deleteManyFromColumn (req: Request, res: Response): Promise<Response> {
+    const { ids } = req.body
+
+    const result = await this.service.deleteManyFromColumn(ids)
+
+    if (ids.length > 0) {
+      const task = await this.service.get(ids[0])
+
+      if (task) {
+        await ids.map(async (id: string) =>
+          await this.boardsService.deleteTaskInBoardOrder(task?.boardId.toString(), id)
+        )
+      }
+    }
+
+    return res.status(200).json(result)
   }
 }

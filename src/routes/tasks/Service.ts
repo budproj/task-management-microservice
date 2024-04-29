@@ -19,4 +19,12 @@ export class TasksService extends AbstractService<ITask> implements ITasksServic
     const op = operation === 1 ? '$addToSet' : '$pull'
     return await this.repository.updateTags(id, op, value)
   }
+
+  public async archiveManyFromColumn (ids: string[]): Promise<void> {
+    return await this.repository.archiveManyFromColumn(ids)
+  }
+
+  public async deleteManyFromColumn (ids: string[]): Promise<void> {
+    return await this.repository.deleteManyFromColumn(ids)
+  }
 }

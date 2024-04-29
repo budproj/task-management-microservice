@@ -38,7 +38,8 @@ export enum TaskPatchsKeys {
   addAttachment = 'addAttachment',
   deleteAttachment = 'deleteAttachment',
   supportTeamMembers = 'supportTeamMembers',
-  status = 'status'
+  status = 'status',
+  active = 'active'
 }
 
 export enum IAuthorType {

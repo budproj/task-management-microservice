@@ -8,8 +8,14 @@ export class BoardsRepository extends AbstractRepository<IBoard> implements IBoa
   }
 
   // This method implements a lazy creation of a Board, if the Board doesn't exist it will be created
-  public async findOrCreateFromTeams (teamsIds: string[], body?: Partial<IBoard>): Promise<IBoard> {
-    const board = await this.model.findOne({ teamsIds: { $in: teamsIds } }).populate('tasks').exec()
+  public async findOrCreateFromTeams (teamsIds: string[], body?: Partial<IBoard>, archived = false): Promise<IBoard> {
+    const queryCondition = archived ? { $ne: false } : false
+
+    const board = await this.model.findOne({ teamsIds: { $in: teamsIds } }).populate({
+      path: 'tasks',
+      // this is not recommended but is because of mongodb behaviour ($ne)
+      match: { active: queryCondition }
+    }).exec()
 
     if (!board) {
       return await (await this.model.create({ ...body, teamsIds })).populate('tasks')
